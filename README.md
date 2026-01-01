@@ -1,76 +1,17 @@
-<!-- ## Database Table Schema -->
-## users table
+# Real-time Chat App with Angular 20 and Supabase
 
-* id (uuid)
-* full_name (text)
-* avatar_url (text)
+## Developer Information:
+- **Name**: [NOR IZATUL FITRAH BINTI ROSLAN]
+- **Student ID**: [2023837438]
+- **Group**: [CDCS2703A]
+- **Lecturer**: [EN.MUHAMMAD ATIF BIN RAMLAN]
 
-## Creating a users table
+## Project Background:
+This project is a real-time chat application built using **Angular 20** for the frontend and **Supabase** for the backend. The chat app allows users to sign in, send messages, and receive real-time updates without refreshing the page. Supabase handles user authentication and real-time database functionality, while Angular manages the user interface and the app's business logic. This project was created to showcase how modern web technologies can be used together to build scalable and interactive web applications.
 
-```sql
-CREATE TABLE public.users (
-   id uuid not null references auth.users on delete cascade,
-   full_name text NULL,
-   avatar_url text NULL,
-   primary key (id)
-);
-```
+## Installation Instructions:
+To run this project locally, follow these steps:
 
-## Enable Row Level Security
-
-```sql
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-```
-
-## Permit Users Access Their Profile
-
-```sql
-CREATE POLICY "Permit Users to Access Their Profile"
-  ON public.users
-  FOR SELECT
-  USING ( auth.uid() = id );
-```
-
-## Permit Users to Update Their Profile
-
-```sql
-CREATE POLICY "Permit Users to Update Their Profile"
-  ON public.users
-  FOR UPDATE
-  USING ( auth.uid() = id );
-```
-
-## Supabase Functions
-
-```sql
-CREATE
-OR REPLACE FUNCTION public.user_profile() RETURNS TRIGGER AS $$ BEGIN INSERT INTO public.users (id, full_name,avatar_url)
-VALUES
-  (
-    NEW.id,
-    NEW.raw_user_meta_data ->> 'full_name'::TEXT,
-    NEW.raw_user_meta_data ->> 'avatar_url'::TEXT,
-  );
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-```
-
-## Supabase Trigger
-
-```sql
-  CREATE TRIGGER
-  create_user_trigger
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE PROCEDURE
-    public.user_profile();
-```
-
-## Chat_Messages table (Real Time)
-
-* id (uuid)
-* Created At (date)
-* text (text)
-* editable (boolean)
-* sender (uuid)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Izatul28/ng-chat-individu-assingment.git
